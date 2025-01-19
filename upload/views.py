@@ -8,7 +8,6 @@ from sklearn.svm import SVC
 from sklearn.metrics import confusion_matrix, roc_auc_score, accuracy_score, precision_score, recall_score, f1_score #classification_report
 
 def clean_text(text):
-    print("Entered clean_text")
     text = re.sub(r'<.*?>', '', text)
     text = re.sub(r'[^a-zA-Z\s]', '', text)
     text = text.lower()
@@ -17,7 +16,11 @@ def clean_text(text):
 def process_csv(file):
     print("Entered process_csv")
     data = pd.read_csv(file)
-    data = data.sample(10000, random_state=42) 
+    # Veri seti boyutunu kontrol edin
+    if len(data) < 10000:
+        data = data.sample(len(data), random_state=42)  # Tüm veriyi alın
+    else:
+        data = data.sample(10000, random_state=42)  # 10000 örnek alın
     data['sentiment'] = data['sentiment'].map({'positive': 1, 'negative': 0})
     data['review'] = data['review'].apply(clean_text)
     print("Out clean text")
